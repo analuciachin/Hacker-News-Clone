@@ -1,6 +1,8 @@
 import React from 'react'
 import { fetchStoryIds, fetchItemInfo, fetchUserStoryIds } from '../utils/api'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import UserStories from './UserStories'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+
 
 function StoriesNav({ selected, onUpdateLanguage }) {
 	const stories = ['Top', 'New']
@@ -22,29 +24,17 @@ function StoriesNav({ selected, onUpdateLanguage }) {
 	)
 }
 
-function ShowStories({ stories, getUserIds }) {
+function ShowStories({ stories, getUserIds, getDateTime }) {
 	return (
 		<ul>
 			{stories.map((story) => (
 				<li key={story.title}>
 					<p><a href={story.url}>{story.title}</a></p>
-					<p>by <a href='#' onClick={() => getUserIds(story.by)}>{story.by}</a> on {story.time} with <a href='#'>{story.descendants}</a> comments</p>
+					<p>by <Link to='/user' onClick={() => getUserIds(story.by)}>{story.by}</Link></p>
+{/*					<p>by <a href='#' onClick={() => getUserIds(story.by)}>{story.by}</a> on {getDateTime(story.time)} with <a href='#'>{story.descendants}</a> comments</p>
+*/}
 				</li>
 			))}
-		</ul>
-	)
-}
-
-function ShowUserStories({ userItems }) {
-	return (
-		<ul>
-			{userItems.map((userItem) => (userItem.type === 'story' && userItem.by) && (
-				<li key={userItem.title}>
-					<p><a href={userItem.url}>{userItem.title}</a></p>
-					<p>by <a href='#'>{userItem.by}</a> on {userItem.time} with <a href='#'>{userItem.descendants}</a> comments</p>
-				</li>
-			))}
-			{console.log(userItems)}
 		</ul>
 	)
 }
@@ -59,7 +49,7 @@ export default class Top extends React.Component {
 			selectedStory: 'Top',
 			stories_ids: [],
 			top_stories: [],
-			user_story_ids: [],
+			user_info: [],
 			user_items: [],
 			error: null
 		}
@@ -68,6 +58,7 @@ export default class Top extends React.Component {
 		//this.getStoryInformation = this.getStoryInformation.bind(this)
 		this.createMarkup = this.createMarkup.bind(this)
 		this.getUserItems = this.getUserItems.bind(this)
+		this.convertDate = this.convertDate.bind(this)
 	}
 
 
@@ -87,7 +78,7 @@ export default class Top extends React.Component {
 					stories_ids: data
 				}, () => { 
 									console.log(this.state.stories_ids)
-									for (let i=0; i<10; i++) {
+									for (let i=0; i<30; i++) {
 										fetchItemInfo(this.state.stories_ids[i])
 											.then((data) => this.setState({
 												top_stories:[...this.state.top_stories, data]
@@ -105,22 +96,25 @@ export default class Top extends React.Component {
 	getUserItems(username) {
 		fetchUserStoryIds(username)
 			.then((data) => this.setState({
-				user_story_ids: data
+				user_info: data
 			}, () => {
-								//console.log(this.state.user_story_ids)
-								//console.log(this.state.user_story_ids.submitted)
-								for(let i=0; i<Math.min(this.state.user_story_ids.submitted.length, 30); i++) {
+								console.log(this.state.user_info)
+								for(let i=0; i<Math.min(this.state.user_info.submitted.length, 30); i++) {
 									console.log(i)
-									fetchItemInfo(this.state.user_story_ids.submitted[i])
+									fetchItemInfo(this.state.user_info.submitted[i])
 										.then((data) => this.setState({
 											user_items:[...this.state.user_items, data]
 										}))
 								}
 							}
 			))
-			console.log(this.state.user_items)
 	}
 
+	convertDate(unixTimestamp) {
+		const theDate = new Date(unixTimestamp * 1000)
+		const dateString = theDate.toGMTString()
+		return dateString
+	}
 
 
 	createMarkup() {
@@ -135,21 +129,31 @@ export default class Top extends React.Component {
 	render() {
 		return (
 				<React.Fragment>
-					<StoriesNav
-						selected={this.state.selectedStory}
-						onUpdateLanguage={this.updateStory}
-					/>
-					<ShowStories
-						stories={this.state.top_stories}
-						getUserIds={this.getUserItems}
-					/>
-
-					{ this.state.user_items.length > 0 &&
-						<ShowUserStories 
-							userItems={this.state.user_items}
+				<Router>
+					<Route exact path='/' render={() => (
+						<div>
+						<StoriesNav
+							selected={this.state.selectedStory}
+							onUpdateLanguage={this.updateStory}
 						/>
-					}
+						<ShowStories
+							stories={this.state.top_stories}
+							getUserIds={this.getUserItems}
+							getDateTime = {this.convertDate}
+						/>
+						</div>
+					)} />
 
+{/*					{ this.state.user_items.length > 0 && */}
+						<Route path='/user' render={() => (
+							<UserStories
+								user={this.state.user_info}
+								userItems={this.state.user_items}
+							/>
+						)} />
+					
+
+					</Router>
 				{/*}	<div dangerouslySetInnerHTML={this.createMarkup()} />*/}
 				{/*<pre>{JSON.stringify(this.state.top_stories, null, 2)}</pre>*/}
 				</React.Fragment>

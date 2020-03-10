@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import Top from './components/Top'
+import UserStories from './components/UserStories'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 class App extends React.Component {
@@ -9,7 +10,7 @@ class App extends React.Component {
 		return (
 			<React.Fragment>
 				<Router>
-					<Route exact path='/' component={Top} />
+						<Route exact path='/' component={Top} />
 				</Router>
 			</React.Fragment>
 		)

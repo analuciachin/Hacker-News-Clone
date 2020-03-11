@@ -9,9 +9,9 @@ class App extends React.Component {
 	render() {
 		return (
 			<React.Fragment>
-				<Router>
-						<Route exact path='/' component={Top} />
-				</Router>
+			<div className='container'>
+				<Top />
+			</div>
 			</React.Fragment>
 		)
 	}

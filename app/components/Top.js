@@ -1,6 +1,7 @@
 import React from 'react'
 import { fetchStoryIds, fetchItemInfo, fetchUserStoryIds } from '../utils/api'
 import UserStories from './UserStories'
+import StoryComments from './StoryComments'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 
@@ -24,15 +25,13 @@ function StoriesNav({ selected, onUpdateLanguage }) {
 	)
 }
 
-function ShowStories({ stories, getUserIds, getDateTime }) {
+function ShowStories({ stories, getUserIds, getDateTime, getComments }) {
 	return (
 		<ul>
-			{stories.map((story) => (
-				<li key={story.title}>
-					<p><a href={story.url}>{story.title}</a></p>
-					<p>by <Link to='/user' onClick={() => getUserIds(story.by)}>{story.by}</Link></p>
-{/*					<p>by <a href='#' onClick={() => getUserIds(story.by)}>{story.by}</a> on {getDateTime(story.time)} with <a href='#'>{story.descendants}</a> comments</p>
-*/}
+			{stories.map((story, index) => (
+				<li key={index} className='story-list'>
+					<p><a href={story.url} className='story-title story-title-color'>{story.title}</a></p>
+					<label className='desc'>by</label> <Link to='/user' onClick={() => getUserIds(story.by)} className='story-desc-link'>{story.by}</Link> <label className='desc'>on {getDateTime(story.time)} with</label> <Link to='/post' onClick={() => getComments(story.id)} className='story-desc-link'>{story.descendants}</Link> <label className='desc'>comments</label>
 				</li>
 			))}
 		</ul>
@@ -48,6 +47,8 @@ export default class Top extends React.Component {
 		this.state = {
 			selectedStory: 'Top',
 			stories_ids: [],
+			story: [],
+			story_comments:[],
 			top_stories: [],
 			user_info: [],
 			user_items: [],
@@ -59,6 +60,7 @@ export default class Top extends React.Component {
 		this.createMarkup = this.createMarkup.bind(this)
 		this.getUserItems = this.getUserItems.bind(this)
 		this.convertDate = this.convertDate.bind(this)
+		this.getStoryComments = this.getStoryComments.bind(this)
 	}
 
 
@@ -82,7 +84,8 @@ export default class Top extends React.Component {
 										fetchItemInfo(this.state.stories_ids[i])
 											.then((data) => this.setState({
 												top_stories:[...this.state.top_stories, data]
-											}, () => console.log(this.state.top_stories)))
+											}//, () => console.log(this.state.top_stories)
+											))
 									}
 								}
 				))
@@ -98,7 +101,7 @@ export default class Top extends React.Component {
 			.then((data) => this.setState({
 				user_info: data
 			}, () => {
-								console.log(this.state.user_info)
+								//console.log(this.state.user_info)
 								for(let i=0; i<Math.min(this.state.user_info.submitted.length, 30); i++) {
 									console.log(i)
 									fetchItemInfo(this.state.user_info.submitted[i])
@@ -109,6 +112,23 @@ export default class Top extends React.Component {
 							}
 			))
 	}
+
+
+	getStoryComments(id) {
+		console.log(id)
+		fetchItemInfo(id)
+			.then((data) => this.setState({
+				story: data
+			}, () => {	console.log(this.state.story.kids)
+									for (let i=0; i<Math.min(this.state.story.kids.length, 20); i++) {
+										fetchItemInfo(this.state.story.kids[i])
+											.then((data) => this.setState({
+												story_comments:[...this.state.story_comments, data]
+											}, () => console.log(this.state.story_comments)))
+									}
+								}))
+	}
+
 
 	convertDate(unixTimestamp) {
 		const theDate = new Date(unixTimestamp * 1000)
@@ -140,6 +160,7 @@ export default class Top extends React.Component {
 							stories={this.state.top_stories}
 							getUserIds={this.getUserItems}
 							getDateTime = {this.convertDate}
+							getComments = {this.getStoryComments}
 						/>
 						</div>
 					)} />
@@ -149,9 +170,17 @@ export default class Top extends React.Component {
 							<UserStories
 								user={this.state.user_info}
 								userItems={this.state.user_items}
+								formatDate={this.convertDate}
 							/>
 						)} />
 					
+						<Route path='/post' render={() => (
+							<StoryComments
+								story={this.state.story}
+								comments={this.state.story_comments}
+								formatDate={this.convertDate}
+							/>
+						)} />
 
 					</Router>
 				{/*}	<div dangerouslySetInnerHTML={this.createMarkup()} />*/}

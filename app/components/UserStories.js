@@ -11,7 +11,7 @@ export default function UserStories({ user, userItems, formatDate }) {
 				{userItems.map((userItem, index) => (userItem.type === 'story' && userItem.by) && (
 					<li key={index} className='story-list'>
 						<p><a href={userItem.url} className='story-title story-title-color'>{userItem.title}</a></p>
-						<p>by <a href='#'>{userItem.by}</a> on {userItem.time} with <a href='#'>{userItem.descendants}</a> comments</p>
+						<p>by <a href='#'>{userItem.by}</a> on {formatDate(userItem.time)} with <a href='#'>{userItem.descendants}</a> comments</p>
 					</li>
 				))}
 				{console.log(userItems)}

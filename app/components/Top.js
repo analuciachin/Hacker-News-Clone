@@ -56,8 +56,6 @@ export default class Top extends React.Component {
 		}
 
 		this.updateStory = this.updateStory.bind(this)
-		//this.getStoryInformation = this.getStoryInformation.bind(this)
-		this.createMarkup = this.createMarkup.bind(this)
 		this.getUserItems = this.getUserItems.bind(this)
 		this.convertDate = this.convertDate.bind(this)
 		this.getStoryComments = this.getStoryComments.bind(this)
@@ -80,11 +78,11 @@ export default class Top extends React.Component {
 					stories_ids: data
 				}, () => { 
 									console.log(this.state.stories_ids)
-									for (let i=0; i<30; i++) {
+									for (let i=0; i<9; i++) {
 										fetchItemInfo(this.state.stories_ids[i])
 											.then((data) => this.setState({
 												top_stories:[...this.state.top_stories, data]
-											}//, () => console.log(this.state.top_stories)
+											}, () => console.log(this.state.top_stories)
 											))
 									}
 								}
@@ -99,7 +97,8 @@ export default class Top extends React.Component {
 	getUserItems(username) {
 		fetchUserStoryIds(username)
 			.then((data) => this.setState({
-				user_info: data
+				user_info: data,
+				user_items: []
 			}, () => {
 								//console.log(this.state.user_info)
 								for(let i=0; i<Math.min(this.state.user_info.submitted.length, 30); i++) {
@@ -118,7 +117,8 @@ export default class Top extends React.Component {
 		console.log(id)
 		fetchItemInfo(id)
 			.then((data) => this.setState({
-				story: data
+				story: data,
+				story_comments: []
 			}, () => {	console.log(this.state.story.kids)
 									for (let i=0; i<Math.min(this.state.story.kids.length, 20); i++) {
 										fetchItemInfo(this.state.story.kids[i])
@@ -135,15 +135,6 @@ export default class Top extends React.Component {
 		const dateString = theDate.toGMTString()
 		return dateString
 	}
-
-
-	createMarkup() {
-		return {
-			__html: "<h1>This is example for dangerouslySetInnerHTML attribute.</h1>"
-		}
-}
-
-
 
 
 	render() {
@@ -165,7 +156,6 @@ export default class Top extends React.Component {
 						</div>
 					)} />
 
-{/*					{ this.state.user_items.length > 0 && */}
 						<Route path='/user' render={() => (
 							<UserStories
 								user={this.state.user_info}

@@ -1,7 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-
-export default function UserStories({ user, userItems, formatDate }) {
+export default function UserStories({ user, userItems, formatDate, getUserIds, getComments }) {
 	return (
 		<div>
 			<h1>{user.id}</h1>
@@ -11,7 +11,7 @@ export default function UserStories({ user, userItems, formatDate }) {
 				{userItems.map((userItem, index) => (userItem.type === 'story' && userItem.by) && (
 					<li key={index} className='story-list'>
 						<p><a href={userItem.url} className='story-title story-title-color'>{userItem.title}</a></p>
-						<p>by <a href='#'>{userItem.by}</a> on {formatDate(userItem.time)} with <a href='#'>{userItem.descendants}</a> comments</p>
+						<label>by </label><Link to='/user' onClick={() => getUserIds(userItem.by)} className='story-desc-link'>{userItem.by}</Link><label> on {formatDate(userItem.time)} with </label><Link to='/post' onClick={() => getComments(userItem.id)} className='story-desc-link'>{userItem.descendants}</Link> <label>comments</label>
 					</li>
 				))}
 				{console.log(userItems)}

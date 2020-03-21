@@ -161,6 +161,8 @@ export default class Top extends React.Component {
 								user={this.state.user_info}
 								userItems={this.state.user_items}
 								formatDate={this.convertDate}
+								getUserIds={this.getUserItems}
+								getComments={this.getStoryComments}
 							/>
 						)} />
 					
@@ -169,6 +171,8 @@ export default class Top extends React.Component {
 								story={this.state.story}
 								comments={this.state.story_comments}
 								formatDate={this.convertDate}
+								getUserIds={this.getUserItems}
+								getComments={this.getStoryComments}
 							/>
 						)} />
 

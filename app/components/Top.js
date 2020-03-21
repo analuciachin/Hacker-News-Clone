@@ -1,5 +1,5 @@
 import React from 'react'
-import { fetchStoryIds, fetchItemInfo, fetchUserStoryIds } from '../utils/api'
+import { fetchTopStoryIds, fetchNewStoryIds, fetchItemInfo, fetchUserStoryIds } from '../utils/api'
 import UserStories from './UserStories'
 import StoryComments from './StoryComments'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
@@ -49,7 +49,7 @@ export default class Top extends React.Component {
 			stories_ids: [],
 			story: [],
 			story_comments:[],
-			top_stories: [],
+			story_ids: [],
 			user_info: [],
 			user_items: [],
 			error: null
@@ -73,16 +73,17 @@ export default class Top extends React.Component {
 		})
 
 		if(this.state.selectedStory === 'Top') {
-			fetchStoryIds()
+			fetchTopStoryIds()
 				.then((data) => this.setState({
-					stories_ids: data
+					stories_ids: data,
+					story_ids: []
 				}, () => { 
 									console.log(this.state.stories_ids)
-									for (let i=0; i<9; i++) {
+									for (let i=0; i<50; i++) {
 										fetchItemInfo(this.state.stories_ids[i])
 											.then((data) => this.setState({
-												top_stories:[...this.state.top_stories, data]
-											}, () => console.log(this.state.top_stories)
+												story_ids:[...this.state.story_ids, data]
+											}, () => console.log(this.state.story_ids)
 											))
 									}
 								}
@@ -90,6 +91,26 @@ export default class Top extends React.Component {
 				.catch((error) => {
 					console.warn('Error fetching story info: ', error)
 				})
+		}
+		else {
+			fetchNewStoryIds()
+				.then((data) => this.setState({
+						stories_ids: data,
+						story_ids: []
+					}, () => { 
+										console.log(this.state.stories_ids)
+										for (let i=0; i<50; i++) {
+											fetchItemInfo(this.state.stories_ids[i])
+												.then((data) => this.setState({
+													story_ids:[...this.state.story_ids, data]
+												}, () => console.log(this.state.story_ids)
+												))
+										}
+									}
+					))
+					.catch((error) => {
+						console.warn('Error fetching story info: ', error)
+					})
 		}
 	}
 
@@ -143,37 +164,49 @@ export default class Top extends React.Component {
 				<Router>
 					<Route exact path='/' render={() => (
 						<div>
-						<StoriesNav
-							selected={this.state.selectedStory}
-							onUpdateLanguage={this.updateStory}
-						/>
-						<ShowStories
-							stories={this.state.top_stories}
-							getUserIds={this.getUserItems}
-							getDateTime = {this.convertDate}
-							getComments = {this.getStoryComments}
-						/>
+							<StoriesNav
+								selected={this.state.selectedStory}
+								onUpdateLanguage={this.updateStory}
+							/>
+							<ShowStories
+								stories={this.state.story_ids}
+								getUserIds={this.getUserItems}
+								getDateTime = {this.convertDate}
+								getComments = {this.getStoryComments}
+							/>
 						</div>
 					)} />
 
 						<Route path='/user' render={() => (
-							<UserStories
-								user={this.state.user_info}
-								userItems={this.state.user_items}
-								formatDate={this.convertDate}
-								getUserIds={this.getUserItems}
-								getComments={this.getStoryComments}
-							/>
+							<div>
+								<StoriesNav
+									selected={this.state.selectedStory}
+									onUpdateLanguage={this.updateStory}
+								/>
+								<UserStories
+									user={this.state.user_info}
+									userItems={this.state.user_items}
+									formatDate={this.convertDate}
+									getUserIds={this.getUserItems}
+									getComments={this.getStoryComments}
+								/>
+							</div>
 						)} />
 					
 						<Route path='/post' render={() => (
-							<StoryComments
-								story={this.state.story}
-								comments={this.state.story_comments}
-								formatDate={this.convertDate}
-								getUserIds={this.getUserItems}
-								getComments={this.getStoryComments}
-							/>
+							<div>
+								<StoriesNav
+										selected={this.state.selectedStory}
+										onUpdateLanguage={this.updateStory}
+									/>
+								<StoryComments
+									story={this.state.story}
+									comments={this.state.story_comments}
+									formatDate={this.convertDate}
+									getUserIds={this.getUserItems}
+									getComments={this.getStoryComments}
+								/>
+							</div>
 						)} />
 
 					</Router>

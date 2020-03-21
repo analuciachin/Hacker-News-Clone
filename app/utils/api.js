@@ -1,4 +1,4 @@
-export function fetchStoryIds () {
+export function fetchTopStoryIds () {
 
 	const endpoint = window.encodeURI(`https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty`)
 
@@ -11,6 +11,20 @@ export function fetchStoryIds () {
 		})
 }
 
+
+export function fetchNewStoryIds () {
+
+	const endpoint = window.encodeURI(`https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty`)
+
+	return fetch(endpoint)
+		.then(response => {
+			if(!response.ok) {
+				throw new Error();
+			}
+			return response.json();
+		})
+
+}
 
 export function fetchItemInfo(id) {
 

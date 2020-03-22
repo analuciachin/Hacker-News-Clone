@@ -8,16 +8,26 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 function StoriesNav({ selected, onUpdateLanguage }) {
 	const stories = ['Top', 'New']
 
-	return(
-		<ul className='flex-center'>
-			{stories.map((story) => (
-				<li key={story}>
+/*
 					<button 
 						className='btn-clear nav-link'
 						style={story === selected ? { color: 'rgb(187,46,31)' } : null }
 						onClick={() => onUpdateLanguage(story)}>
 						{story}
 					</button>
+*/
+
+	return(
+		<ul className='flex-center'>
+			{stories.map((story) => (
+				<li key={story}>
+					<Link 
+						to='/'
+						className='btn-clear nav-link'
+						style={story === selected ? { color: 'rgb(187,46,31)' } : null }
+						onClick={() => onUpdateLanguage(story)}>
+						{story}
+					</Link>
 					
 				</li>
 			))}
@@ -141,11 +151,13 @@ export default class Top extends React.Component {
 				story: data,
 				story_comments: []
 			}, () => {	console.log(this.state.story.kids)
-									for (let i=0; i<Math.min(this.state.story.kids.length, 20); i++) {
-										fetchItemInfo(this.state.story.kids[i])
-											.then((data) => this.setState({
-												story_comments:[...this.state.story_comments, data]
-											}, () => console.log(this.state.story_comments)))
+									if(this.state.story.kids) {
+										for (let i=0; i<Math.min(this.state.story.kids.length, 20); i++) {
+											fetchItemInfo(this.state.story.kids[i])
+												.then((data) => this.setState({
+													story_comments:[...this.state.story_comments, data]
+												}, () => console.log(this.state.story_comments)))
+										}
 									}
 								}))
 	}

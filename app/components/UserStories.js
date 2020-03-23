@@ -6,6 +6,9 @@ export default function UserStories({ user, userItems, formatDate, getUserIds, g
 		<div>
 			<h1>{user.id}</h1>
 			<p className='desc'>joined {formatDate(user.created)} has {user.karma} karma</p>
+			{user.about &&
+				<div dangerouslySetInnerHTML={{ __html: user.about }} className='desc' />
+			}
 			<h2>Posts</h2>
 			<ul>
 				{userItems.map((userItem, index) => (userItem.type === 'story' && userItem.by) && (

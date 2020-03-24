@@ -5,19 +5,18 @@ import StoryComments from './StoryComments'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 
-function StoriesNav({ selected, onUpdateLanguage }) {
-	const stories = ['Top', 'New']
+function StoriesNav({ selected, onUpdateStory }) {
+//	const stories = ['Top', 'New']
 
 /*
 					<button 
 						className='btn-clear nav-link'
 						style={story === selected ? { color: 'rgb(187,46,31)' } : null }
-						onClick={() => onUpdateLanguage(story)}>
+						onClick={() => onUpdateStory(story)}>
 						{story}
 					</button>
-*/
 
-	return(
+return(
 		<ul className='flex-center'>
 			{stories.map((story) => (
 				<li key={story}>
@@ -25,12 +24,38 @@ function StoriesNav({ selected, onUpdateLanguage }) {
 						to='/'
 						className='btn-clear nav-link'
 						style={story === selected ? { color: 'rgb(187,46,31)' } : null }
-						onClick={() => onUpdateLanguage(story)}>
+						onClick={() => onUpdateStory(story)}>
 						{story}
 					</Link>
 					
 				</li>
 			))}
+		</ul>
+	)
+
+
+*/
+//	console.log('selected story: ', selected)
+		return(
+		<ul className='flex-center'>
+			<li key='Top'>
+				<Link 
+					to='/'
+					className='btn-clear nav-link'
+					style={'Top' === selected ? { color: 'rgb(187,46,31)' } : null }
+					onClick={() => onUpdateStory('Top')}>
+					Top
+				</Link>
+			</li>
+			<li key='New'>
+				<Link 
+					to='/new'
+					className='btn-clear nav-link'
+					style={'New' === selected ? { color: 'rgb(187,46,31)' } : null }
+					onClick={() => onUpdateStory('New')}>
+					New
+				</Link>
+			</li>
 		</ul>
 	)
 }
@@ -59,7 +84,7 @@ export default class Top extends React.Component {
 			stories_ids: [],
 			story: [],
 			story_comments:[],
-			story_ids: [],
+			story_info: [],
 			user_info: [],
 			user_items: [],
 			error: null
@@ -69,6 +94,7 @@ export default class Top extends React.Component {
 		this.getUserItems = this.getUserItems.bind(this)
 		this.convertDate = this.convertDate.bind(this)
 		this.getStoryComments = this.getStoryComments.bind(this)
+		this.getStory = this.getStory.bind(this)
 	}
 
 
@@ -80,20 +106,23 @@ export default class Top extends React.Component {
 		this.setState({
 			selectedStory,
 			error: null,
-		})
+		}, this.getStory)
+	}
 
+	getStory() {
 		if(this.state.selectedStory === 'Top') {
+			console.log('Top')
 			fetchTopStoryIds()
 				.then((data) => this.setState({
 					stories_ids: data,
-					story_ids: []
+					story_info: []
 				}, () => { 
 									console.log(this.state.stories_ids)
 									for (let i=0; i<50; i++) {
 										fetchItemInfo(this.state.stories_ids[i])
 											.then((data) => this.setState({
-												story_ids:[...this.state.story_ids, data]
-											}, () => console.log(this.state.story_ids)
+												story_info:[...this.state.story_info, data]
+											}//, () => console.log(this.state.story_info)
 											))
 									}
 								}
@@ -103,17 +132,18 @@ export default class Top extends React.Component {
 				})
 		}
 		else {
+			console.log('New')
 			fetchNewStoryIds()
 				.then((data) => this.setState({
 						stories_ids: data,
-						story_ids: []
+						story_info: []
 					}, () => { 
 										console.log(this.state.stories_ids)
 										for (let i=0; i<50; i++) {
 											fetchItemInfo(this.state.stories_ids[i])
 												.then((data) => this.setState({
-													story_ids:[...this.state.story_ids, data]
-												}, () => console.log(this.state.story_ids)
+													story_info:[...this.state.story_info, data]
+												}//, () => console.log(this.state.story_info)
 												))
 										}
 									}
@@ -178,10 +208,25 @@ export default class Top extends React.Component {
 						<div>
 							<StoriesNav
 								selected={this.state.selectedStory}
-								onUpdateLanguage={this.updateStory}
+								onUpdateStory={this.updateStory}
 							/>
 							<ShowStories
-								stories={this.state.story_ids}
+								stories={this.state.story_info}
+								getUserIds={this.getUserItems}
+								getDateTime = {this.convertDate}
+								getComments = {this.getStoryComments}
+							/>
+						</div>
+					)} />
+
+					<Route exact path='/new' render={() => (
+						<div>
+							<StoriesNav
+								selected={this.state.selectedStory}
+								onUpdateStory={this.updateStory}
+							/>
+							<ShowStories
+								stories={this.state.story_info}
 								getUserIds={this.getUserItems}
 								getDateTime = {this.convertDate}
 								getComments = {this.getStoryComments}
@@ -193,7 +238,7 @@ export default class Top extends React.Component {
 							<div>
 								<StoriesNav
 									selected={this.state.selectedStory}
-									onUpdateLanguage={this.updateStory}
+									onUpdateStory={this.updateStory}
 								/>
 								<UserStories
 									user={this.state.user_info}
@@ -208,9 +253,9 @@ export default class Top extends React.Component {
 						<Route path='/post' render={() => (
 							<div>
 								<StoriesNav
-										selected={this.state.selectedStory}
-										onUpdateLanguage={this.updateStory}
-									/>
+									selected={this.state.selectedStory}
+									onUpdateStory={this.updateStory}
+								/>
 								<StoryComments
 									story={this.state.story}
 									comments={this.state.story_comments}

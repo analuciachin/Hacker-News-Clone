@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import Top from './components/Top'
+import TopNew from './components/TopNew'
 import UserStories from './components/UserStories'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
@@ -10,7 +10,7 @@ class App extends React.Component {
 		return (
 			<React.Fragment>
 			<div className='container'>
-				<Top />
+				<TopNew />
 			</div>
 			</React.Fragment>
 		)

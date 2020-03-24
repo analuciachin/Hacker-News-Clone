@@ -75,7 +75,7 @@ function ShowStories({ stories, getUserIds, getDateTime, getComments }) {
 
 
 
-export default class Top extends React.Component {
+export default class TopNew extends React.Component {
 	constructor(props) {
 		super(props)
 

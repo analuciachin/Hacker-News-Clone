@@ -94,7 +94,6 @@ export default class TopNew extends React.Component {
 		this.getUserItems = this.getUserItems.bind(this)
 		this.convertDate = this.convertDate.bind(this)
 		this.getStoryComments = this.getStoryComments.bind(this)
-		this.getStory = this.getStory.bind(this)
 	}
 
 
@@ -106,11 +105,9 @@ export default class TopNew extends React.Component {
 		this.setState({
 			selectedStory,
 			error: null,
-		}, this.getStory)
-	}
+		})
 
-	getStory() {
-		if(this.state.selectedStory === 'Top') {
+		if(selectedStory === 'Top') {
 			console.log('Top')
 			fetchTopStoryIds()
 				.then((data) => this.setState({
@@ -237,7 +234,7 @@ export default class TopNew extends React.Component {
 						<Route path='/user' render={() => (
 							<div>
 								<StoriesNav
-									selected={this.state.selectedStory}
+									selected={undefined}
 									onUpdateStory={this.updateStory}
 								/>
 								<UserStories
@@ -253,7 +250,7 @@ export default class TopNew extends React.Component {
 						<Route path='/post' render={() => (
 							<div>
 								<StoriesNav
-									selected={this.state.selectedStory}
+									selected={undefined}
 									onUpdateStory={this.updateStory}
 								/>
 								<StoryComments
@@ -267,8 +264,6 @@ export default class TopNew extends React.Component {
 						)} />
 
 					</Router>
-				{/*}	<div dangerouslySetInnerHTML={this.createMarkup()} />*/}
-				{/*<pre>{JSON.stringify(this.state.top_stories, null, 2)}</pre>*/}
 				</React.Fragment>
 		)
 	}

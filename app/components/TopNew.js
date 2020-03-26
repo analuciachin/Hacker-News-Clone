@@ -2,7 +2,9 @@ import React from 'react'
 import { fetchTopStoryIds, fetchNewStoryIds, fetchItemInfo, fetchUserStoryIds } from '../utils/api'
 import UserStories from './UserStories'
 import StoryComments from './StoryComments'
+import Loading from './Loading'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+
 
 
 function StoriesNav({ selected, onUpdateStory }) {
@@ -87,6 +89,9 @@ export default class TopNew extends React.Component {
 			story_info: [],
 			user_info: [],
 			user_items: [],
+			loading_stories: true,
+			loading_user: true,
+			loading_comments: true,
 			error: null
 		}
 
@@ -112,7 +117,8 @@ export default class TopNew extends React.Component {
 			fetchTopStoryIds()
 				.then((data) => this.setState({
 					stories_ids: data,
-					story_info: []
+					story_info: [],
+					loading_stories: false
 				}, () => { 
 									console.log(this.state.stories_ids)
 									for (let i=0; i<50; i++) {
@@ -133,7 +139,8 @@ export default class TopNew extends React.Component {
 			fetchNewStoryIds()
 				.then((data) => this.setState({
 						stories_ids: data,
-						story_info: []
+						story_info: [],
+						loading_stories: false
 					}, () => { 
 										console.log(this.state.stories_ids)
 										for (let i=0; i<50; i++) {
@@ -156,7 +163,8 @@ export default class TopNew extends React.Component {
 		fetchUserStoryIds(username)
 			.then((data) => this.setState({
 				user_info: data,
-				user_items: []
+				user_items: [],
+				loading_user: false
 			}, () => {
 								//console.log(this.state.user_info)
 								for(let i=0; i<Math.min(this.state.user_info.submitted.length, 30); i++) {
@@ -176,7 +184,8 @@ export default class TopNew extends React.Component {
 		fetchItemInfo(id)
 			.then((data) => this.setState({
 				story: data,
-				story_comments: []
+				story_comments: [],
+				loading_comments: false
 			}, () => {	console.log(this.state.story.kids)
 									if(this.state.story.kids) {
 										for (let i=0; i<Math.min(this.state.story.kids.length, 20); i++) {
@@ -207,6 +216,9 @@ export default class TopNew extends React.Component {
 								selected={this.state.selectedStory}
 								onUpdateStory={this.updateStory}
 							/>
+							{this.state.loading_stories &&
+								<Loading />
+							}
 							<ShowStories
 								stories={this.state.story_info}
 								getUserIds={this.getUserItems}
@@ -222,6 +234,9 @@ export default class TopNew extends React.Component {
 								selected={this.state.selectedStory}
 								onUpdateStory={this.updateStory}
 							/>
+							{this.state.loading_stories &&
+								<Loading />
+							}
 							<ShowStories
 								stories={this.state.story_info}
 								getUserIds={this.getUserItems}
@@ -237,6 +252,9 @@ export default class TopNew extends React.Component {
 									selected={undefined}
 									onUpdateStory={this.updateStory}
 								/>
+								{this.state.loading_user &&
+									<Loading text='Fetching user'/>
+								}
 								<UserStories
 									user={this.state.user_info}
 									userItems={this.state.user_items}
@@ -253,6 +271,9 @@ export default class TopNew extends React.Component {
 									selected={undefined}
 									onUpdateStory={this.updateStory}
 								/>
+								{this.state.loading_comments &&
+									<Loading text='Fetching comments'/>
+								}
 								<StoryComments
 									story={this.state.story}
 									comments={this.state.story_comments}

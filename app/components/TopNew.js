@@ -1,9 +1,12 @@
 import React from 'react'
 import { fetchTopStoryIds, fetchNewStoryIds, fetchItemInfo, fetchUserStoryIds } from '../utils/api'
+import ShowStories from './ShowStories'
 import UserStories from './UserStories'
 import StoryComments from './StoryComments'
 import Loading from './Loading'
+import Nav from './Nav'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { ThemeProvider } from '../contexts/theme'
 
 
 
@@ -39,7 +42,7 @@ return(
 */
 //	console.log('selected story: ', selected)
 		return(
-		<ul className='flex-center'>
+		<ul className='flex-center nav-margin'>
 			<li key='Top'>
 				<Link 
 					to='/'
@@ -62,19 +65,6 @@ return(
 	)
 }
 
-function ShowStories({ stories, getUserIds, getDateTime, getComments }) {
-	return (
-		<ul>
-			{stories.map((story, index) => (
-				<li key={index} className='story-list'>
-					<p><a href={story.url} className='story-title story-title-color'>{story.title}</a></p>
-					<label className='desc'>by</label> <Link to='/user' onClick={() => getUserIds(story.by)} className='story-desc-link'>{story.by}</Link> <label className='desc'>on {getDateTime(story.time)} with</label> <Link to='/post' onClick={() => getComments(story.id)} className='story-desc-link'>{story.descendants}</Link> <label className='desc'>comments</label>
-				</li>
-			))}
-		</ul>
-	)
-}
-
 
 
 export default class TopNew extends React.Component {
@@ -92,7 +82,13 @@ export default class TopNew extends React.Component {
 			loading_stories: true,
 			loading_user: true,
 			loading_comments: true,
-			error: null
+			error: null,
+			theme: 'light',
+			toggleTheme: () => {
+				this.setState(({ theme }) => ({
+					theme: theme === 'light' ? 'dark' : 'light'
+				}))
+			}
 		}
 
 		this.updateStory = this.updateStory.bind(this)
@@ -210,23 +206,29 @@ export default class TopNew extends React.Component {
 		return (
 				<React.Fragment>
 				<Router>
-					<Route exact path='/' render={() => (
-						<div>
-							<StoriesNav
-								selected={this.state.selectedStory}
-								onUpdateStory={this.updateStory}
-							/>
-							{this.state.loading_stories &&
-								<Loading />
-							}
-							<ShowStories
-								stories={this.state.story_info}
-								getUserIds={this.getUserItems}
-								getDateTime = {this.convertDate}
-								getComments = {this.getStoryComments}
-							/>
-						</div>
-					)} />
+					<ThemeProvider value={this.state}>
+						<Route exact path='/' render={() => (
+							<div className={this.state.theme}>
+								<div className='container'>
+		{/*						<StoriesNav
+										selected={this.state.selectedStory}
+										onUpdateStory={this.updateStory}
+									/>
+		*/}
+									<Nav />
+									{this.state.loading_stories &&
+										<Loading />
+									}
+									<ShowStories
+										stories={this.state.story_info}
+										getUserIds={this.getUserItems}
+										getDateTime = {this.convertDate}
+										getComments = {this.getStoryComments}
+									/>
+								</div>
+							</div>
+						)} />
+				</ThemeProvider>
 
 					<Route exact path='/new' render={() => (
 						<div>
@@ -246,43 +248,55 @@ export default class TopNew extends React.Component {
 						</div>
 					)} />
 
-						<Route path='/user' render={() => (
-							<div>
-								<StoriesNav
-									selected={undefined}
-									onUpdateStory={this.updateStory}
-								/>
-								{this.state.loading_user &&
-									<Loading text='Fetching user'/>
-								}
-								<UserStories
-									user={this.state.user_info}
-									userItems={this.state.user_items}
-									formatDate={this.convertDate}
-									getUserIds={this.getUserItems}
-									getComments={this.getStoryComments}
-								/>
-							</div>
-						)} />
-					
-						<Route path='/post' render={() => (
-							<div>
-								<StoriesNav
-									selected={undefined}
-									onUpdateStory={this.updateStory}
-								/>
-								{this.state.loading_comments &&
-									<Loading text='Fetching comments'/>
-								}
-								<StoryComments
-									story={this.state.story}
-									comments={this.state.story_comments}
-									formatDate={this.convertDate}
-									getUserIds={this.getUserItems}
-									getComments={this.getStoryComments}
-								/>
-							</div>
-						)} />
+						<ThemeProvider value={this.state}>
+							<Route path='/user' render={() => (
+								<div className={this.state.theme}>
+									<div className='container'>
+		{/*							<StoriesNav
+											selected={undefined}
+											onUpdateStory={this.updateStory}
+										/>
+		*/}
+										<Nav />
+										{this.state.loading_user &&
+											<Loading text='Fetching user'/>
+										}
+										<UserStories
+											user={this.state.user_info}
+											userItems={this.state.user_items}
+											formatDate={this.convertDate}
+											getUserIds={this.getUserItems}
+											getComments={this.getStoryComments}
+										/>
+									</div>
+								</div>
+							)} />
+						</ThemeProvider>
+
+						<ThemeProvider value={this.state}>
+							<Route path='/post' render={() => (
+								<div className={this.state.theme}>
+									<div className='container'>
+		{/*							<StoriesNav
+											selected={undefined}
+											onUpdateStory={this.updateStory}
+										/>
+		*/}
+										<Nav />
+										{this.state.loading_comments &&
+											<Loading text='Fetching comments'/>
+										}
+										<StoryComments
+											story={this.state.story}
+											comments={this.state.story_comments}
+											formatDate={this.convertDate}
+											getUserIds={this.getUserItems}
+											getComments={this.getStoryComments}
+										/>
+									</div>
+								</div>
+							)} />
+						</ThemeProvider>
 
 					</Router>
 				</React.Fragment>

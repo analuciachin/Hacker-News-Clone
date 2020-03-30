@@ -22,16 +22,6 @@ li {
 	padding: 50px 200px;
 }
 
-.flex-center {
-	display: flex;
-	/*justify-content: center;*/
-	align-items: center;
-}
-
-.nav-margin {
-	margin: 20px 0 50px 0;
-}
-
 .btn-clear {
 	border: none;
 	background: transparent;
@@ -43,6 +33,10 @@ li {
 	font-weight: bold;
 	text-decoration: none;
 	color: inherit;
+}
+
+.nav li {
+	margin-right: 10px;
 }
 
 .story-title {
@@ -108,3 +102,11 @@ li {
 	color: #d9d9d9;
 }
 
+.row {
+	display: flex;
+	flex-direction: row;
+}
+
+.space-between {
+	justify-content: space-between;
+}

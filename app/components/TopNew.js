@@ -10,63 +10,6 @@ import { ThemeProvider } from '../contexts/theme'
 
 
 
-function StoriesNav({ selected, onUpdateStory }) {
-//	const stories = ['Top', 'New']
-
-/*
-					<button 
-						className='btn-clear nav-link'
-						style={story === selected ? { color: 'rgb(187,46,31)' } : null }
-						onClick={() => onUpdateStory(story)}>
-						{story}
-					</button>
-
-return(
-		<ul className='flex-center'>
-			{stories.map((story) => (
-				<li key={story}>
-					<Link 
-						to='/'
-						className='btn-clear nav-link'
-						style={story === selected ? { color: 'rgb(187,46,31)' } : null }
-						onClick={() => onUpdateStory(story)}>
-						{story}
-					</Link>
-					
-				</li>
-			))}
-		</ul>
-	)
-
-
-*/
-//	console.log('selected story: ', selected)
-		return(
-		<ul className='flex-center nav-margin'>
-			<li key='Top'>
-				<Link 
-					to='/'
-					className='btn-clear nav-link'
-					style={'Top' === selected ? { color: 'rgb(187,46,31)' } : null }
-					onClick={() => onUpdateStory('Top')}>
-					Top
-				</Link>
-			</li>
-			<li key='New'>
-				<Link 
-					to='/new'
-					className='btn-clear nav-link'
-					style={'New' === selected ? { color: 'rgb(187,46,31)' } : null }
-					onClick={() => onUpdateStory('New')}>
-					New
-				</Link>
-			</li>
-		</ul>
-	)
-}
-
-
-
 export default class TopNew extends React.Component {
 	constructor(props) {
 		super(props)
@@ -210,12 +153,7 @@ export default class TopNew extends React.Component {
 						<Route exact path='/' render={() => (
 							<div className={this.state.theme}>
 								<div className='container'>
-		{/*						<StoriesNav
-										selected={this.state.selectedStory}
-										onUpdateStory={this.updateStory}
-									/>
-		*/}
-									<Nav />
+									<Nav onUpdateStory={this.updateStory} />
 									{this.state.loading_stories &&
 										<Loading />
 									}
@@ -230,34 +168,30 @@ export default class TopNew extends React.Component {
 						)} />
 				</ThemeProvider>
 
-					<Route exact path='/new' render={() => (
-						<div>
-							<StoriesNav
-								selected={this.state.selectedStory}
-								onUpdateStory={this.updateStory}
-							/>
-							{this.state.loading_stories &&
-								<Loading />
-							}
-							<ShowStories
-								stories={this.state.story_info}
-								getUserIds={this.getUserItems}
-								getDateTime = {this.convertDate}
-								getComments = {this.getStoryComments}
-							/>
-						</div>
-					)} />
+					<ThemeProvider value={this.state}>
+						<Route exact path='/new' render={() => (
+							<div className={this.state.theme}>
+								<div className='container'>
+									<Nav onUpdateStory={this.updateStory} />
+									{this.state.loading_stories &&
+										<Loading />
+									}
+									<ShowStories
+										stories={this.state.story_info}
+										getUserIds={this.getUserItems}
+										getDateTime = {this.convertDate}
+										getComments = {this.getStoryComments}
+									/>
+								</div>
+							</div>
+						)} />
+					</ThemeProvider>
 
 						<ThemeProvider value={this.state}>
 							<Route path='/user' render={() => (
 								<div className={this.state.theme}>
 									<div className='container'>
-		{/*							<StoriesNav
-											selected={undefined}
-											onUpdateStory={this.updateStory}
-										/>
-		*/}
-										<Nav />
+										<Nav onUpdateStory={this.updateStory} />
 										{this.state.loading_user &&
 											<Loading text='Fetching user'/>
 										}
@@ -277,12 +211,7 @@ export default class TopNew extends React.Component {
 							<Route path='/post' render={() => (
 								<div className={this.state.theme}>
 									<div className='container'>
-		{/*							<StoriesNav
-											selected={undefined}
-											onUpdateStory={this.updateStory}
-										/>
-		*/}
-										<Nav />
+										<Nav onUpdateStory={this.updateStory} />
 										{this.state.loading_comments &&
 											<Loading text='Fetching comments'/>
 										}

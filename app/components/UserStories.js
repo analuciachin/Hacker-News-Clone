@@ -18,7 +18,26 @@ export default function UserStories({ user, userItems, formatDate, getUserIds, g
 						<li key={index} className='story-list'>
 							<p><a href={userItem.url} 
 										className={`story-title story-title-color-${theme}`}>{userItem.title}</a></p>
-							<label className='desc'>by </label><Link to='/user' onClick={() => getUserIds(userItem.by)} className={`story-desc-link-${theme}`}>{userItem.by}</Link><label className='desc'> on {formatDate(userItem.time)} with </label><Link to='/post' onClick={() => getComments(userItem.id)} className={`story-desc-link-${theme}`}>{userItem.descendants}</Link> <label className='desc'>comments</label>
+							<label className='desc'>by </label>
+							<Link to={{
+											pathname: '/user',
+											search: `?id=${user.id}`
+										}} 
+										onClick={() => getUserIds(userItem.by)} 
+										className={`story-desc-link-${theme}`}>
+										{userItem.by}
+							</Link>
+							<label className='desc'> on {formatDate(userItem.time)} with </label>
+							<Link
+								to={{
+									pathname: '/post',
+									search: `?id=${userItem.id}`
+								}}
+								onClick={() => getComments(userItem.id)}
+								className={`story-desc-link-${theme}`}>
+									{userItem.descendants}
+							</Link>
+							<label className='desc'> comments </label>
 						</li>
 					))}
 					{console.log(userItems)}

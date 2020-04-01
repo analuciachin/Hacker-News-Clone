@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { ThemeConsumer } from '../contexts/theme'
+import PropTypes from 'prop-types'
+
 
 export default function UserStories({ user, userItems, formatDate, getUserIds, getComments }) {
 	return (
@@ -46,4 +48,13 @@ export default function UserStories({ user, userItems, formatDate, getUserIds, g
 		)}
 		</ThemeConsumer>
 	)
+}
+
+
+UserStories.propTypes = {
+	user: PropTypes.array.isRequired,
+	userItems: PropTypes.array.isRequired,
+	formatDate: PropTypes.func.isRequired,
+	getUserIds: PropTypes.func.isRequired,
+	getComments: PropTypes.func.isRequired,
 }

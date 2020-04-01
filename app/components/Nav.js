@@ -1,6 +1,8 @@
 import React from 'react'
 import { ThemeConsumer } from '../contexts/theme'
 import { NavLink } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
 
 const activeStyle = {
 	color: 'rgb(187, 46, 31)'
@@ -44,4 +46,8 @@ export default function Nav({ onUpdateStory }) {
 			)}
 		</ThemeConsumer>
 	)
+}
+
+Nav.propTypes = {
+	onUpdateStory: PropTypes.func.isRequired
 }

@@ -9,7 +9,6 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { ThemeProvider } from '../contexts/theme'
 
 
-
 export default class TopNew extends React.Component {
 	constructor(props) {
 		super(props)
@@ -57,7 +56,8 @@ export default class TopNew extends React.Component {
 				.then((data) => this.setState({
 					stories_ids: data,
 					story_info: [],
-					loading_stories: false
+					loading_stories: false,
+					error: null
 				}, () => { 
 									console.log(this.state.stories_ids)
 									for (let i=0; i<50; i++) {
@@ -66,11 +66,14 @@ export default class TopNew extends React.Component {
 												story_info:[...this.state.story_info, data]
 											}//, () => console.log(this.state.story_info)
 											))
+											.catch((error) => {
+												console.warn('Error fetching top stories data: ', error)
+											})
 									}
 								}
 				))
 				.catch((error) => {
-					console.warn('Error fetching story info: ', error)
+					console.warn('Error fetching top stories data: ', error)
 				})
 		}
 		else {
@@ -79,7 +82,8 @@ export default class TopNew extends React.Component {
 				.then((data) => this.setState({
 						stories_ids: data,
 						story_info: [],
-						loading_stories: false
+						loading_stories: false,
+						error: null
 					}, () => { 
 										console.log(this.state.stories_ids)
 										for (let i=0; i<50; i++) {
@@ -88,11 +92,14 @@ export default class TopNew extends React.Component {
 													story_info:[...this.state.story_info, data]
 												}//, () => console.log(this.state.story_info)
 												))
+												.catch((error) => {
+													console.warn('Error fetching new stories data: ', error)
+												})
 										}
 									}
 					))
 					.catch((error) => {
-						console.warn('Error fetching story info: ', error)
+						console.warn('Error fetching new stories data: ', error)
 					})
 		}
 	}

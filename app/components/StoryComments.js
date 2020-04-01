@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { ThemeConsumer } from '../contexts/theme'
+import PropTypes from 'prop-types'
+
 
 export default function StoryComments({ story, comments, formatDate, getUserIds, getComments }) {
 	return (
@@ -54,4 +56,13 @@ export default function StoryComments({ story, comments, formatDate, getUserIds,
 		)}
 		</ThemeConsumer>
 	)
+}
+
+
+StoryComments.propTypes = {
+	//story: PropTypes.array.isRequired,
+	comments: PropTypes.array.isRequired,
+	formatDate: PropTypes.func.isRequired,
+	getUserIds: PropTypes.func.isRequired,
+	getComments: PropTypes.func.isRequired
 }

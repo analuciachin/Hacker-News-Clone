@@ -148,44 +148,44 @@ export default class TopNew extends React.Component {
 	render() {
 		return (
 				<React.Fragment>
-				<Router>
-					<ThemeProvider value={this.state}>
-						<Route exact path='/' render={() => (
-							<div className={this.state.theme}>
-								<div className='container'>
-									<Nav onUpdateStory={this.updateStory} />
-									{this.state.loading_stories &&
-										<Loading />
-									}
-									<ShowStories
-										stories={this.state.story_info}
-										getUserIds={this.getUserItems}
-										getDateTime = {this.convertDate}
-										getComments = {this.getStoryComments}
-									/>
+					<Router>
+						<ThemeProvider value={this.state}>
+							<Route exact path='/' render={() => (
+								<div className={this.state.theme}>
+									<div className='container'>
+										<Nav onUpdateStory={this.updateStory} />
+										{this.state.loading_stories &&
+											<Loading />
+										}
+										<ShowStories
+											stories={this.state.story_info}
+											getUserIds={this.getUserItems}
+											getDateTime = {this.convertDate}
+											getComments = {this.getStoryComments}
+										/>
+									</div>
 								</div>
-							</div>
-						)} />
-				</ThemeProvider>
+							)} />
+							</ThemeProvider>
 
-					<ThemeProvider value={this.state}>
-						<Route exact path='/new' render={() => (
-							<div className={this.state.theme}>
-								<div className='container'>
-									<Nav onUpdateStory={this.updateStory} />
-									{this.state.loading_stories &&
-										<Loading />
-									}
-									<ShowStories
-										stories={this.state.story_info}
-										getUserIds={this.getUserItems}
-										getDateTime = {this.convertDate}
-										getComments = {this.getStoryComments}
-									/>
+						<ThemeProvider value={this.state}>
+							<Route exact path='/new' render={() => (
+								<div className={this.state.theme}>
+									<div className='container'>
+										<Nav onUpdateStory={this.updateStory} />
+										{this.state.loading_stories &&
+											<Loading />
+										}
+										<ShowStories
+											stories={this.state.story_info}
+											getUserIds={this.getUserItems}
+											getDateTime = {this.convertDate}
+											getComments = {this.getStoryComments}
+										/>
+									</div>
 								</div>
-							</div>
-						)} />
-					</ThemeProvider>
+							)} />
+						</ThemeProvider>
 
 						<ThemeProvider value={this.state}>
 							<Route path='/user' render={() => (
